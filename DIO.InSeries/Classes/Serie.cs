@@ -13,7 +13,7 @@ namespace DIO.InSeries.Classes
 
         private int Ano { get; set; }
 
-        private bool Excluido { get; set; }
+        public bool Excluido { get; set; }
 
         public Serie(int id, Genero genero, string titulo, string descricao,  int ano)
         {
@@ -29,7 +29,7 @@ namespace DIO.InSeries.Classes
         {
             var arquivo = linhaArquivo.Split("|");
             this.Id = Convert.ToInt32(arquivo[0]);
-            this.Genero = Util.ObterValorGenero(arquivo[1].ToString());
+            this.Genero = Utilities.Util.ObterValorGenero(arquivo[1].ToString());
 
             this.Titulo = arquivo[2];
             this.Descricao = arquivo[3];
@@ -39,17 +39,8 @@ namespace DIO.InSeries.Classes
 
         public override string ToString()
         {
-            //string retorno = string.Empty;
-            //retorno += $" Gênero: {this.Genero} {Environment.NewLine}";
-            //retorno += $" Título: {this.Titulo} {Environment.NewLine}";
-            //retorno += $" Descrição: {this.Descricao} {Environment.NewLine}";
-            //retorno += $" Ano Início: {this.Ano} {Environment.NewLine}";
-            //retorno += $" Excluído: {this.Excluido}";
-            
-            //return retorno;
             return $"{this.Id}|{this.Genero}|{this.Titulo}|{this.Descricao}|{this.Ano}|{this.Excluido}";
         }
-        
 
         public string retornaTitulo()
         {

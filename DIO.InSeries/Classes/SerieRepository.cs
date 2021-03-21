@@ -1,7 +1,9 @@
 ﻿using DIO.InSeries.Interfaces;
+using DIO.InSeries.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace DIO.InSeries.Classes
 {
@@ -19,20 +21,11 @@ namespace DIO.InSeries.Classes
             }
         }
 
-        //TODO: refazer o atualizar
         public void Atualiza(int id, Serie entity)
         {
-            linhasArquivo = new List<string>();
+            linhasArquivo = Arquivo.Ler(pathArquivo);
 
-            using (StreamReader reader = new StreamReader(pathArquivo))
-            {
-                string linha = string.Empty;
-                while ((linha = reader.ReadLine()) != null)
-                {
-                    linhasArquivo.Add(linha);
-                }
-            }
-
+            //Está aqui para reescrever o arquivo
             File.Create(pathArquivo).Dispose();
 
             using (StreamWriter writer = new StreamWriter(pathArquivo))
@@ -40,41 +33,23 @@ namespace DIO.InSeries.Classes
                 foreach (var linha in linhasArquivo)
                 {
                     if (linha.Contains(id.ToString()))
+                    {
                         writer.WriteLine(entity.ToString());
-
-                    writer.WriteLine(linha);
+                    }
+                    else
+                    {
+                        writer.WriteLine(linha);
+                    }
                 }
             }
         }
 
-        //Testar Excluir
         public void Exclui(int id)
         {
-            linhasArquivo = new List<string>();
-
-            using (StreamReader reader = new StreamReader(pathArquivo))
-            {
-                string line = string.Empty;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    linhasArquivo.Add(line);
-                }
-            }
-
-            File.Create(pathArquivo).Dispose();
-
-            using (StreamWriter writer = new StreamWriter(pathArquivo))
-            {
-                writer.Flush();
-
-                foreach (var linha in linhasArquivo)
-                {
-                    if (linha.Contains(id.ToString()))
-                        continue;
-
-                    writer.WriteLine(linha);
-                }
-            }
+            var series = Lista();
+            var serie = series.Where(x => x.retornaId() == id).FirstOrDefault();
+            serie.Exclui();
+            Atualiza(id, serie);
         }
 
         public void Insere(Serie entity)
@@ -99,7 +74,7 @@ namespace DIO.InSeries.Classes
                 }
             }
 
-            return lista;
+            return lista.Where(x => !x.retornaExcluido()).ToList();
         }
 
         public int ProximoId()

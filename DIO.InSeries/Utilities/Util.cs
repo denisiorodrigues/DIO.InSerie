@@ -1,7 +1,7 @@
 ﻿using DIO.InSeries.Enum;
 using System;
 
-namespace DIO.InSeries.Classes
+namespace DIO.InSeries.Utilities
 {
     public static class Util
     {
