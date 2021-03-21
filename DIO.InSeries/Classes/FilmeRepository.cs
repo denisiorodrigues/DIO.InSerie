@@ -7,13 +7,13 @@ using System.Linq;
 
 namespace DIO.InSeries.Classes
 {
-    class SerieRepository : IRepository<Serie>
+    public class FilmeRepository : IRepository<Filme>
     {
-        private const string pathArquivo = "Serie.txt";
+        private const string pathArquivo = "Filme.txt";
 
         private List<string> linhasArquivo;
 
-        public SerieRepository()
+        public FilmeRepository()
         {
             if (!File.Exists(pathArquivo))
             {
@@ -21,7 +21,7 @@ namespace DIO.InSeries.Classes
             }
         }
 
-        public void Atualiza(int id, Serie entity)
+        public void Atualiza(int id, Filme entity)
         {
             linhasArquivo = Arquivo.Ler(pathArquivo);
 
@@ -52,7 +52,7 @@ namespace DIO.InSeries.Classes
             Atualiza(id, serie);
         }
 
-        public void Insere(Serie entity)
+        public void Insere(Filme entity)
         {
             using (StreamWriter writer = new StreamWriter(pathArquivo, append: true))
             {
@@ -61,16 +61,16 @@ namespace DIO.InSeries.Classes
             }
         }
 
-        public List<Serie> Lista()
+        public List<Filme> Lista()
         {
-            List<Serie> lista = new List<Serie>();
+            List<Filme> lista = new List<Filme>();
             string line = string.Empty;
 
             using (StreamReader reader = new StreamReader(pathArquivo))
             {
                 while ((line = reader.ReadLine()) != null)
                 {
-                    lista.Add(new Serie(line));
+                    lista.Add(new Filme(line));
                 }
             }
 
@@ -82,23 +82,23 @@ namespace DIO.InSeries.Classes
             return new Random().Next(1, 100000);
         }
 
-        public Serie RetornaPorId(int id)
+        public Filme RetornaPorId(int id)
         {
-            Serie serie = null;
+            Filme filme = null;
             using (StreamReader reader = new StreamReader(pathArquivo))
             {
                 string linha = string.Empty;
                 while ((linha = reader.ReadLine()) != null)
                 {
                     if (linha.Contains(id.ToString()))
-                        serie = new Serie(linha);
+                        filme = new Filme(linha);
                 }
             }
 
-            if (serie == null)
+            if (filme == null)
                 throw new ArgumentNullException("Série não localizada!");
 
-            return serie;
+            return filme;
         }
     }
 }

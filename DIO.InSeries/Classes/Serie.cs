@@ -1,5 +1,7 @@
 ﻿using DIO.InSeries.Enum;
+using DIO.InSeries.Utilities;
 using System;
+using System.Reflection;
 
 namespace DIO.InSeries.Classes
 {
@@ -12,8 +14,6 @@ namespace DIO.InSeries.Classes
         private string  Descricao { get; set; }
 
         private int Ano { get; set; }
-
-        public bool Excluido { get; set; }
 
         public Serie(int id, Genero genero, string titulo, string descricao,  int ano)
         {
@@ -45,21 +45,6 @@ namespace DIO.InSeries.Classes
         public string retornaTitulo()
         {
             return this.Titulo;
-        }
-
-        public int retornaId()
-        {
-            return this.Id;
-        }
-
-        public void Exclui()
-        {
-            this.Excluido = true;
-        }
-
-        internal bool retornaExcluido()
-        {
-            return this.Excluido;
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace DIO.InSeries.Util
+namespace DIO.InSeries.Utilities
 {
     public static class Arquivo
     {

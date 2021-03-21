@@ -1,5 +1,6 @@
 ﻿using DIO.InSeries.Enum;
 using System;
+using System.Reflection;
 
 namespace DIO.InSeries.Utilities
 {
@@ -17,6 +18,25 @@ namespace DIO.InSeries.Utilities
             }
 
             throw new IndexOutOfRangeException("Enum não encontrado");
+        }
+
+        public static string ObterValoresSeparadoPorPipe(object classe)
+        {
+            string retorno = string.Empty;
+
+            PropertyInfo[] properties = classe.GetType().GetProperties(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+            foreach (var property in properties)
+            {
+                if (string.IsNullOrEmpty(retorno))
+                {
+                    retorno += property.GetValue(classe, null).ToString();
+                }else
+                {
+                    retorno += $"|{property.GetValue(classe, null)}";
+                }
+            }
+
+            return retorno;
         }
     }
 }
