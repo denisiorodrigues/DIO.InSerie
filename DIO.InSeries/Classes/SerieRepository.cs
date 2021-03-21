@@ -7,62 +7,96 @@ namespace DIO.InSeries.Classes
 {
     class SerieRepository : IRepository<Serie>
     {
-        private const string pathArquivo = "~\\Data\\Serie.txt";
+        private const string pathArquivo = "Serie.txt";
 
+        private List<string> linhasArquivo;
+
+        public SerieRepository()
+        {
+            if (!File.Exists(pathArquivo))
+            {
+                File.Create(pathArquivo).Dispose();
+            }
+        }
+
+        //TODO: refazer o atualizar
         public void Atualiza(int id, Serie entity)
         {
-            string line = string.Empty;
+            linhasArquivo = new List<string>();
 
             using (StreamReader reader = new StreamReader(pathArquivo))
             {
-                using (StreamWriter writer = new StreamWriter(pathArquivo))
+                string linha = string.Empty;
+                while ((linha = reader.ReadLine()) != null)
                 {
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        if (String.Compare(line, id.ToString()) == 0)
-                            writer.WriteLine(entity.ToString());
+                    linhasArquivo.Add(linha);
+                }
+            }
 
-                        writer.WriteLine(line);
-                    }
+            File.Create(pathArquivo).Dispose();
+
+            using (StreamWriter writer = new StreamWriter(pathArquivo))
+            {
+                foreach (var linha in linhasArquivo)
+                {
+                    if (linha.Contains(id.ToString()))
+                        writer.WriteLine(entity.ToString());
+
+                    writer.WriteLine(linha);
                 }
             }
         }
 
+        //Testar Excluir
         public void Exclui(int id)
         {
-            string line = string.Empty;
-            
+            linhasArquivo = new List<string>();
+
             using (StreamReader reader = new StreamReader(pathArquivo))
             {
-                using (StreamWriter writer = new StreamWriter(pathArquivo))
+                string line = string.Empty;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        if (String.Compare(line, id.ToString()) == 0)
-                            continue;
+                    linhasArquivo.Add(line);
+                }
+            }
 
-                        writer.WriteLine(line);
-                    }
+            File.Create(pathArquivo).Dispose();
+
+            using (StreamWriter writer = new StreamWriter(pathArquivo))
+            {
+                writer.Flush();
+
+                foreach (var linha in linhasArquivo)
+                {
+                    if (linha.Contains(id.ToString()))
+                        continue;
+
+                    writer.WriteLine(linha);
                 }
             }
         }
 
         public void Insere(Serie entity)
         {
-            using (StreamWriter writer = new StreamWriter(pathArquivo))
+            using (StreamWriter writer = new StreamWriter(pathArquivo, append: true))
             {
                 writer.WriteLine(entity.ToString());
+                writer.Dispose();
             }
         }
 
         public List<Serie> Lista()
         {
             List<Serie> lista = new List<Serie>();
+            string line = string.Empty;
 
             using (StreamReader reader = new StreamReader(pathArquivo))
             {
-                var lineSerie = reader.ReadLine();
-                lista.Add(new Serie(lineSerie));
+                while ((line = reader.ReadLine()) != null)
+                {
+                    lista.Add(new Serie(line));
+                }
             }
 
             return lista;
@@ -70,27 +104,23 @@ namespace DIO.InSeries.Classes
 
         public int ProximoId()
         {
-            var random = new Random();
-            return random.Next(1, 100000);
+            return new Random().Next(1, 100000);
         }
 
         public Serie RetornaPorId(int id)
         {
-            string line = string.Empty;
             Serie serie = null;
             using (StreamReader reader = new StreamReader(pathArquivo))
             {
-                using (StreamWriter writer = new StreamWriter(pathArquivo))
+                string linha = string.Empty;
+                while ((linha = reader.ReadLine()) != null)
                 {
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        if (String.Compare(line, id.ToString()) == 0)
-                            serie = new Serie(line);
-                    }
+                    if (linha.Contains(id.ToString()))
+                        serie = new Serie(linha);
                 }
             }
 
-            if (serie ==null )
+            if (serie == null)
                 throw new ArgumentNullException("Série não localizada!");
 
             return serie;

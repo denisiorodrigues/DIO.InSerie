@@ -29,11 +29,12 @@ namespace DIO.InSeries.Classes
         {
             var arquivo = linhaArquivo.Split("|");
             this.Id = Convert.ToInt32(arquivo[0]);
-            this.Genero = (Genero) Convert.ToInt32(arquivo[1]);
+            this.Genero = Util.ObterValorGenero(arquivo[1].ToString());
+
             this.Titulo = arquivo[2];
             this.Descricao = arquivo[3];
             this.Ano = Convert.ToInt32(arquivo[4]);
-            this.Excluido = Convert.ToBoolean(arquivo[3]);
+            this.Excluido = Convert.ToBoolean(arquivo[5]);
         }
 
         public override string ToString()
